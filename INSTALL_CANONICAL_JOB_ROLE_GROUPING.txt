@@ -1,0 +1,35 @@
+V4Career - Canonical Job Role Grouping
+
+This update fixes the issue shown in the latest screenshot. Previously the dropdown only grouped exact titles that differed by capitalization/spacing. It now groups common title variants into canonical role labels, with counts summed across every matching job record.
+
+Examples:
+- Senior Data Analyst - SQL + DATA ANALYST -> Data Analyst
+- Lead Data Engineer + Data Engineer -> Data Engineer
+- Lead DevOps Engineer + DevOps Engineer -> DevOps Engineer
+- Senior Cloud Engineer + Cloud Engineer -> Cloud Engineer
+- QA Automation Engineer + Automation Test Engineer -> Automation Test Engineer
+
+The role grouping is family-specific and is implemented in the database title-family mapping. Selecting a canonical role filters all underlying job-title variants in the jobs table.
+
+Files to replace:
+1. app.py
+2. static/app.js
+
+Database migration:
+- On first API request after restart, app.py adds role_group to job_title_family_map if it is not already present.
+- It then recalculates family and canonical role group values for all distinct titles.
+- Existing jobs rows are not modified or deleted.
+
+Install:
+1. Back up your existing app.py and static/app.js.
+2. Replace with these files.
+3. Restart Flask.
+4. Wait for the first filter-options request to finish (it synchronizes the title mapping).
+5. Hard refresh with Ctrl+F5.
+
+Checks completed:
+- Python syntax compilation passed.
+- JavaScript syntax check passed.
+- Canonical role grouping sample checks passed.
+
+Live database counts and end-to-end UI behavior must be verified against the connected MySQL/PostgreSQL database after installation.
